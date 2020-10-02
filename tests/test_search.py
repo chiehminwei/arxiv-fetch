@@ -4,7 +4,6 @@ try:
 except ImportError:
     from mock import patch
 from arxiv import Search
-from arxiv import query
 import numpy as np
 import feedparser
 
@@ -56,6 +55,8 @@ def get_random_arxiv_entry():
             {'name': get_random_str()},
         ]
 
+    entry['published'] = '2020-01-10T'
+
     return entry
 
 
@@ -96,38 +97,6 @@ class TestSearch(unittest.TestCase):
         search = Search(max_results=221, max_chunk_results=33, time_sleep=0)
 
         with patch.object(feedparser, "parse", new_callable=get_parse_callable):
-            results = search.download(iterative=False)
+            results = search.download()
         self.assertEqual(len(results), 221)
 
-    def test_download_iterator(self):
-        search = Search(max_results=221, max_chunk_results=33, time_sleep=0)
-
-        with patch.object(feedparser, "parse", new_callable=get_parse_callable):
-            results = search.download(iterative=True)
-
-        self.assertTrue(callable(results))
-
-    def test_invalid_id(self):
-        self.assertEqual(len(query(id_list=["0000.0000"])),  0)
-
-    def test_query(self):
-
-        with patch.object(feedparser, "parse", new_callable=get_parse_callable):
-            result = query(
-                query="sth",
-                max_results=341)
-
-        self.assertEqual(len(result), 341)
-
-    def test_query_iterator(self):
-
-        iterator = query(
-            query="sth",
-            max_results=200,
-            max_chunk_results=111,
-            iterative=True)
-
-        with patch.object(feedparser, "parse", new_callable=get_parse_callable):
-            results = [r for r in iterator()]
-
-        self.assertEqual(len(results), 200)

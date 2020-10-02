@@ -1,4 +1,4 @@
-# arxiv.py [![Python 3.6](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
+# arxiv-fetch[![Python 2.7](https://img.shields.io/badge/python-2.7-blue.svg)](https://www.python.org/downloads/release/python-270/) [![Python 3.6](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
 
 Command line utility for [the arXiv API](http://arxiv.org/help/api/index).
 Downloads PDFs and metadata for query results in parallel.
@@ -11,6 +11,7 @@ Downloads PDFs and metadata for query results in parallel.
 
 ```bash
 $ pip install feedparser
+$ pip install numpy # For unit-testing only
 ```
 
 ## Usage

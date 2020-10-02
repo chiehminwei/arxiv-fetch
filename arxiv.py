@@ -1,15 +1,18 @@
+from __future__ import print_function
 import argparse
 from datetime import datetime
-import os
-import sys
-import logging
-import time
-import re
-import feedparser
-import json
-from urllib.parse import quote
-from urllib.request import urlretrieve
+import os, sys
+import logging, time
+import re, feedparser, json
 from multiprocessing.pool import ThreadPool
+try:
+    # Python 2
+    from urllib import quote
+    from urllib import urlretrieve
+except ImportError:
+    # Python 3
+    from urllib.parse import quote
+    from urllib.request import urlretrieve
 
 # Logging
 root = logging.getLogger()
@@ -191,10 +194,13 @@ class Search(object):
         Triggers the download of the result of the given search query.
         """
         logger.info('Start downloading')
+        records = []
         for result in self._get_next():
             paths = ThreadPool(8).imap_unordered(self._download_single, result)
             for path in paths:
                 logger.info(path)
+            records.extend([r for r in result])
+        return records
 
 def download(query="", downloadPDF=True, downloadMeta=False, save_path='./',
              sort_by="relevance", sort_order="descending", max_results=None,
@@ -215,7 +221,8 @@ def download(query="", downloadPDF=True, downloadMeta=False, save_path='./',
         before=before,
         after=after)
 
-    search.download()   
+    records = search.download()
+    return records
 
 def construct_query(search, author, journal):
     """ 
